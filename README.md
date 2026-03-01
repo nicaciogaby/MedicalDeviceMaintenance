@@ -48,8 +48,8 @@ Technologies Used
 
  Current Status
 
-✔ Project structure created  
-✔ Models implemented (Device, Incident, MaintenanceAction)  
+- Project structure created  
+- Models implemented (Device, Incident, MaintenanceAction)  
 Database integration in progress  
 
 Project Timeline
