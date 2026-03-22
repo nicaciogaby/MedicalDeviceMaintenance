@@ -9,6 +9,6 @@ namespace MedicalDeviceMaintenance.Data
 
         public DbSet<Device> Devices => Set<Device>();
         public DbSet<Incident> Incidents => Set<Incident>();
-        public DbSet<MaintenanceAction> MaintenanceActions => Set<MaintenanceAction>();
+        public DbSet<MaintenanceAction> MaintenanceActions { get; set; }
     }
 }
