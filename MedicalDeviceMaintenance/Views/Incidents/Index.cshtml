@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.ReportedAt)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Device)
+                Device
             </th>
             <th></th>
         </tr>
@@ -39,9 +39,20 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+                <td>
+                    @if (item.Status == MedicalDeviceMaintenance.Models.IncidentStatus.Open)
+                    {
+                        <span>Open</span>
+                    }
+                    else if (item.Status == MedicalDeviceMaintenance.Models.IncidentStatus.InProgress)
+                    {
+                        <span>In Progress</span>
+                    }
+                    else
+                    {
+                        <span>Closed</span>
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReportedAt)
             </td>

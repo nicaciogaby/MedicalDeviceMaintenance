@@ -50,11 +50,12 @@ namespace MedicalDeviceMaintenance.Controllers
         public IActionResult Create()
         {
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name");
+            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)));
             return View();
         }
 
         // POST: Incidents/Create
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,ReportedAt,DeviceId")] Incident incident)
@@ -65,7 +66,10 @@ namespace MedicalDeviceMaintenance.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
+            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)), incident.Status);
+            return View(incident);
             return View(incident);
         }
 
@@ -82,13 +86,14 @@ namespace MedicalDeviceMaintenance.Controllers
             {
                 return NotFound();
             }
+
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
+            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)), incident.Status);
             return View(incident);
         }
 
         // POST: Incidents/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,ReportedAt,DeviceId")] Incident incident)
@@ -119,6 +124,8 @@ namespace MedicalDeviceMaintenance.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
+            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)), incident.Status);
+            return View(incident);
             return View(incident);
         }
 
