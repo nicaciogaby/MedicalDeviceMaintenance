@@ -1,8 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Medical Device Maintenance & Incident Tracking System</h1>
+    <p class="lead">A simple web-based system to manage devices, incidents, and maintenance actions.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Devices</h5>
+                <p class="card-text">Manage medical devices and store key device information.</p>
+                <a asp-controller="Devices" asp-action="Index" class="btn btn-primary">View Devices</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Incidents</h5>
+                <p class="card-text">Track and manage incidents associated with medical devices.</p>
+                <a asp-controller="Incidents" asp-action="Index" class="btn btn-primary">View Incidents</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Maintenance</h5>
+                <p class="card-text">Record maintenance actions and follow up on device issues.</p>
+                <a asp-controller="MaintenanceActions" asp-action="Index" class="btn btn-primary">View Maintenance</a>
+            </div>
+        </div>
+    </div>
 </div>
