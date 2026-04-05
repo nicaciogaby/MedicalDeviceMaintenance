@@ -1,48 +1,113 @@
 ﻿@model MedicalDeviceMaintenance.Models.Incident
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Incident Details";
 }
 
-<h1>Details</h1>
+<h1>Incident Details</h1>
+<hr />
 
-<div>
-    <h4>Incident</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReportedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReportedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Device)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Device.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Incident Information</h4>
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Severity)
+            </dt>
+            <dd class="col-sm-8">
+                <span class="badge @(Model.Severity == "Critical" || Model.Severity == "High" ? "bg-danger" :
+                                     Model.Severity == "Medium" ? "bg-warning text-dark" :
+                                     "bg-info")">
+                    @Html.DisplayFor(model => model.Severity)
+                </span>
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd class="col-sm-8">
+                <span class="badge @(Model.Status == "Open" ? "bg-danger" :
+                                     Model.Status == "In Progress" ? "bg-warning text-dark" :
+                                     "bg-success")">
+                    @Html.DisplayFor(model => model.Status)
+                </span>
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.DateReported)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.DateReported)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Device)
+            </dt>
+            <dd class="col-sm-8">
+                <a asp-controller="Devices" asp-action="Details"
+                   asp-route-id="@Model.DeviceId">
+                    @Html.DisplayFor(model => model.Device.Name)
+                </a>
+            </dd>
+        </dl>
+
+        <div class="mt-3">
+            <a asp-action="Edit" asp-route-id="@Model?.Id"
+               class="btn btn-primary me-2">Edit</a>
+            <a asp-action="Index"
+               class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4>Maintenance Actions</h4>
+            <a asp-controller="MaintenanceActions" asp-action="Create"
+               class="btn btn-sm btn-success">+ Add Action</a>
+        </div>
+
+        @if (Model.MaintenanceActions == null || !Model.MaintenanceActions.Any())
+        {
+            <div class="alert alert-info">
+                No maintenance actions recorded for this incident.
+            </div>
+        }
+        else
+        {
+            <table class="table table-sm table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Action Taken</th>
+                        <th>Technician</th>
+                        <th>Date</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var action in Model.MaintenanceActions)
+                    {
+                        <tr>
+                            <td>@action.ActionTaken</td>
+                            <td>@action.TechnicianName</td>
+                            <td>@action.ActionDate.ToShortDateString()</td>
+                            <td>@action.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
 </div>

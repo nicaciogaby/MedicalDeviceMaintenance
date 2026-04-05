@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MedicalDeviceMaintenance.Data;
 using MedicalDeviceMaintenance.Models;
@@ -22,23 +17,23 @@ namespace MedicalDeviceMaintenance.Controllers
         // GET: Devices
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Devices.ToListAsync());
+            var devices = await _context.Devices
+                .Include(d => d.Incidents)
+                .ToListAsync();
+            return View(devices);
         }
 
         // GET: Devices/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var device = await _context.Devices
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (device == null)
-            {
-                return NotFound();
-            }
+                .Include(d => d.Incidents)
+                    .ThenInclude(i => i.MaintenanceActions)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (device == null) return NotFound();
 
             return View(device);
         }
@@ -50,11 +45,10 @@ namespace MedicalDeviceMaintenance.Controllers
         }
 
         // POST: Devices/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,SerialNumber,Location,CreatedAt")] Device device)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Name,SerialNumber,Model,Manufacturer,Location,PurchaseDate,Status")] Device device)
         {
             if (ModelState.IsValid)
             {
@@ -68,30 +62,21 @@ namespace MedicalDeviceMaintenance.Controllers
         // GET: Devices/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var device = await _context.Devices.FindAsync(id);
-            if (device == null)
-            {
-                return NotFound();
-            }
+            if (device == null) return NotFound();
+
             return View(device);
         }
 
         // POST: Devices/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,SerialNumber,Location,CreatedAt")] Device device)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,Name,SerialNumber,Model,Manufacturer,Location,PurchaseDate,Status")] Device device)
         {
-            if (id != device.Id)
-            {
-                return NotFound();
-            }
+            if (id != device.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -102,14 +87,8 @@ namespace MedicalDeviceMaintenance.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeviceExists(device.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!DeviceExists(device.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -119,17 +98,13 @@ namespace MedicalDeviceMaintenance.Controllers
         // GET: Devices/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var device = await _context.Devices
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (device == null)
-            {
-                return NotFound();
-            }
+                .Include(d => d.Incidents)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (device == null) return NotFound();
 
             return View(device);
         }
@@ -139,13 +114,15 @@ namespace MedicalDeviceMaintenance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var device = await _context.Devices.FindAsync(id);
+            var device = await _context.Devices
+                .Include(d => d.Incidents)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
             if (device != null)
             {
                 _context.Devices.Remove(device);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MedicalDeviceMaintenance.Data;
 using MedicalDeviceMaintenance.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalDeviceMaintenance.Controllers
 {
@@ -23,25 +18,20 @@ namespace MedicalDeviceMaintenance.Controllers
         // GET: Incidents
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Incidents.Include(i => i.Device);
-            return View(await appDbContext.ToListAsync());
+            var incidents = _context.Incidents.Include(i => i.Device);
+            return View(await incidents.ToListAsync());
         }
 
         // GET: Incidents/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var incident = await _context.Incidents
                 .Include(i => i.Device)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (incident == null)
-            {
-                return NotFound();
-            }
+
+            if (incident == null) return NotFound();
 
             return View(incident);
         }
@@ -50,58 +40,58 @@ namespace MedicalDeviceMaintenance.Controllers
         public IActionResult Create()
         {
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name");
-            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)));
+            ViewData["Severity"] = new SelectList(new[]
+                { "Low", "Medium", "High", "Critical" });
+            ViewData["Status"] = new SelectList(new[]
+                { "Open", "In Progress", "Resolved", "Closed" });
             return View();
         }
 
         // POST: Incidents/Create
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,ReportedAt,DeviceId")] Incident incident)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Title,Description,Severity,Status,DateReported,DeviceId")] Incident incident)
         {
             if (ModelState.IsValid)
             {
+                incident.DateReported = DateTime.Now;
                 _context.Add(incident);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
-            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)), incident.Status);
-            return View(incident);
+            ViewData["Severity"] = new SelectList(new[]
+                { "Low", "Medium", "High", "Critical" }, incident.Severity);
+            ViewData["Status"] = new SelectList(new[]
+                { "Open", "In Progress", "Resolved", "Closed" }, incident.Status);
             return View(incident);
         }
 
         // GET: Incidents/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var incident = await _context.Incidents.FindAsync(id);
-            if (incident == null)
-            {
-                return NotFound();
-            }
+            if (incident == null) return NotFound();
 
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
-            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)), incident.Status);
+            ViewData["Severity"] = new SelectList(new[]
+                { "Low", "Medium", "High", "Critical" }, incident.Severity);
+            ViewData["Status"] = new SelectList(new[]
+                { "Open", "In Progress", "Resolved", "Closed" }, incident.Status);
             return View(incident);
         }
 
         // POST: Incidents/Edit/5
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,ReportedAt,DeviceId")] Incident incident)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,Title,Description,Severity,Status,DateReported,DeviceId")] Incident incident)
         {
-            if (id != incident.Id)
-            {
-                return NotFound();
-            }
+            if (id != incident.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -112,38 +102,30 @@ namespace MedicalDeviceMaintenance.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!IncidentExists(incident.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!IncidentExists(incident.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
-            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(IncidentStatus)), incident.Status);
-            return View(incident);
+            ViewData["Severity"] = new SelectList(new[]
+                { "Low", "Medium", "High", "Critical" }, incident.Severity);
+            ViewData["Status"] = new SelectList(new[]
+                { "Open", "In Progress", "Resolved", "Closed" }, incident.Status);
             return View(incident);
         }
 
         // GET: Incidents/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var incident = await _context.Incidents
                 .Include(i => i.Device)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (incident == null)
-            {
-                return NotFound();
-            }
+
+            if (incident == null) return NotFound();
 
             return View(incident);
         }
@@ -157,9 +139,8 @@ namespace MedicalDeviceMaintenance.Controllers
             if (incident != null)
             {
                 _context.Incidents.Remove(incident);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

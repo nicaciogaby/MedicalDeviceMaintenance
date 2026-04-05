@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MedicalDeviceMaintenance.Models
 {
@@ -8,11 +7,35 @@ namespace MedicalDeviceMaintenance.Models
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; } = string.Empty;
+        [StringLength(100)]
+        [Display(Name = "Device Name")]
+        public string Name { get; set; }
 
-        public string? SerialNumber { get; set; }
-        public string? Location { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Display(Name = "Serial Number")]
+        public string SerialNumber { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        [StringLength(50)]
+        public string Model { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Manufacturer { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Location { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Purchase Date")]
+        public DateTime PurchaseDate { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Status { get; set; }
+
+        public ICollection<Incident>? Incidents { get; set; }
     }
 }

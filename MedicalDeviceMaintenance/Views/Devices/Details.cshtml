@@ -1,42 +1,147 @@
 ﻿@model MedicalDeviceMaintenance.Models.Device
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Device Details";
 }
 
-<h1>Details</h1>
+<h1>Device Details</h1>
+<hr />
 
-<div>
-    <h4>Device</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SerialNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SerialNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Device Information</h4>
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.SerialNumber)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.SerialNumber)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Model)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Model)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Manufacturer)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Manufacturer)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Location)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Location)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.PurchaseDate)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.PurchaseDate)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd class="col-sm-8">
+                <span class="badge @(Model.Status == "Active" ? "bg-success" :
+                                     Model.Status == "Maintenance" ? "bg-warning text-dark" :
+                                     "bg-danger")">
+                    @Html.DisplayFor(model => model.Status)
+                </span>
+            </dd>
+        </dl>
+
+        <div class="mt-3">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary me-2">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+
+        <!-- Associated Incidents -->
+        <h4>Incidents</h4>
+        @if (Model.Incidents == null || !Model.Incidents.Any())
+        {
+            <p class="text-muted">No incidents recorded for this device.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var incident in Model.Incidents)
+                    {
+                        <tr>
+                            <td>@incident.Title</td>
+                            <td>
+                                <span class="badge @(incident.Severity == "High" || incident.Severity == "Critical" ? "bg-danger" :
+                                                     incident.Severity == "Medium" ? "bg-warning text-dark" :
+                                                     "bg-info")">
+                                    @incident.Severity
+                                </span>
+                            </td>
+                            <td>@incident.Status</td>
+                            <td>@incident.DateReported.ToShortDateString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <!-- Associated Maintenance Actions -->
+        <h4 class="mt-4">Maintenance Actions</h4>
+        @if (Model.Incidents == null || !Model.Incidents.Any(i => i.MaintenanceActions != null && i.MaintenanceActions.Any()))
+        {
+            <p class="text-muted">No maintenance actions recorded for this device.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Action Taken</th>
+                        <th>Technician</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var incident in Model.Incidents)
+                    {
+                        @if (incident.MaintenanceActions != null)
+                        {
+                            @foreach (var action in incident.MaintenanceActions)
+                            {
+                                <tr>
+                                    <td>@action.ActionTaken</td>
+                                    <td>@action.TechnicianName</td>
+                                    <td>@action.ActionDate.ToShortDateString()</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
 </div>
