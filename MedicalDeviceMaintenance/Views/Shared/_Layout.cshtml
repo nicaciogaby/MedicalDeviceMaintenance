@@ -10,7 +10,6 @@
 </head>
 <body>
 
-    <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark top-navbar">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center gap-2"
@@ -45,25 +44,53 @@
                         </a>
                     </li>
                 </ul>
+
                 <div class="d-flex align-items-center gap-3">
                     <span class="text-white-50 small">
                         <i class="fa-regular fa-clock me-1"></i>
                         <span id="currentTime"></span>
                     </span>
                     <div class="vr bg-white opacity-25"></div>
-                    <span class="text-white small">
-                        <i class="fa-solid fa-user-nurse me-1"></i>
-                        Gabriela Nicacio Lima
-                    </span>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <span class="text-white small">
+                            <i class="fa-solid fa-user-nurse me-1"></i>
+                            @User.Identity.Name
+                        </span>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <span class="badge bg-danger">Admin</span>
+                        }
+                        else if (User.IsInRole("Technician"))
+                        {
+                            <span class="badge bg-warning text-dark">Technician</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark">Viewer</span>
+                        }
+                        <form asp-controller="Account" asp-action="Logout"
+                              method="post" class="mb-0">
+                            <button type="submit" class="btn btn-sm btn-outline-light">
+                                <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login"
+                           class="btn btn-sm btn-outline-light">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i>Login
+                        </a>
+                    }
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Page Content -->
     <div class="page-wrapper">
         <main class="main-content">
-            <!-- Page Header Bar -->
             <div class="page-header-bar">
                 <div class="container-fluid px-4">
                     <nav aria-label="breadcrumb">
@@ -79,14 +106,12 @@
                 </div>
             </div>
 
-            <!-- Main Body -->
             <div class="container-fluid px-4 py-4">
                 @RenderBody()
             </div>
         </main>
     </div>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="container-fluid px-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -107,16 +132,20 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        // Live clock
         function updateTime() {
             const now = new Date();
-            document.getElementById('currentTime').textContent =
-                now.toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const el = document.getElementById('currentTime');
+            if (el) {
+                el.textContent = now.toLocaleTimeString('en-IE', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            }
         }
         updateTime();
         setInterval(updateTime, 1000);
 
-        // Active nav link highlight
         document.querySelectorAll('.nav-link').forEach(link => {
             if (link.href === window.location.href) {
                 link.classList.add('active');

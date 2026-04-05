@@ -1,0 +1,69 @@
+﻿@model MedicalDeviceMaintenance.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - MedTracker</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body style="background: linear-gradient(135deg, #1a5276 0%, #2e86c1 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+
+    <div style="background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); padding: 2.5rem; width: 100%; max-width: 420px;">
+
+        <div class="text-center mb-4">
+            <i class="fa-solid fa-heart-pulse fa-3x" style="color: #e74c3c;"></i>
+            <h2 style="color: #1a5276; font-weight: 700;" class="mt-2">MedTracker</h2>
+            <p class="text-muted small">Medical Device Maintenance System</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-bold">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-bold">Password</label>
+                <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label small">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn w-100 mb-3 text-white fw-bold"
+                    style="background: linear-gradient(135deg, #1a5276, #2e86c1); border: none; padding: 0.75rem; border-radius: 8px;">
+                <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+            </button>
+
+            <div class="text-center mb-3">
+                <a asp-action="Register" class="text-decoration-none" style="color: #2e86c1;">
+                    <i class="fa-solid fa-user-plus me-1"></i>Create new account
+                </a>
+            </div>
+
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #555;">
+                <strong style="color: #1a5276;">Demo accounts:</strong><br>
+                Admin: admin@medtracker.com / Admin123!<br>
+                Tech: tech@medtracker.com / Tech123!<br>
+                Viewer: viewer@medtracker.com / Viewer123!
+            </div>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>
