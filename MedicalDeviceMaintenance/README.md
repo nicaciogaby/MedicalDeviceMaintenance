@@ -1,123 +1,45 @@
-﻿# Medical Device Maintenance & Incident Tracking System
+# MedTracker — Medical Device Maintenance System
 
-## Project Overview
+Final Year Project — Gabriela Nicacio Lima
 
-This project is a web-based system designed to help track medical device incidents and maintenance activities.
+## About
+A web-based MVC application built with ASP.NET Core for tracking 
+medical devices, incidents and maintenance actions.
 
-The system allows users to:
+## Features
+- Full CRUD for Devices, Incidents and Maintenance Actions
+- Dashboard with live statistics
+- Incident severity and status tracking
+- Cascade delete between related entities
+- Professional UI with Bootstrap 5 and Font Awesome
 
-- Register medical devices
-- Record incidents related to devices
-- Track maintenance actions taken to resolve issues
-- Maintain a history of device problems and solutions
-
-This project is part of the **Higher Diploma in Science in Computing** at **Atlantic Technological University Sligo**.
-
----
-
-## Technologies Used
-
+## Tech Stack
 - ASP.NET Core MVC (.NET 8)
-- C#
 - Entity Framework Core
 - SQL Server LocalDB
-- HTML / CSS / Bootstrap
-- GitHub for version control
+- Bootstrap 5
+- Font Awesome 6
 
----
-
-## System Architecture
-
-The application follows an MVC architecture:
-
-- **Models** → Data structures (Device, Incident, MaintenanceAction)
-- **Views** → User interface pages
-- **Controllers** → Application logic
-
-Database access is handled using **Entity Framework Core (Code-First approach)**.
-
----
-
-## Features Implemented
-
-Current system functionality includes:
-
-- Device Management (CRUD)
-- Incident Tracking
-- Incident Status Workflow (Open, In Progress, Closed)
-- Linking Incidents to Devices
-- Maintenance Actions linked to Incidents
-- Navigation menu for system sections
-- Basic user interface using Bootstrap
-
----
-
-## Database Structure
-
-The system contains three main entities:
-
-**Device**
-- Id
-- Name
-- SerialNumber
-- Location
-- CreatedAt
-
-**Incident**
-- Id
-- Title
-- Description
-- Status
-- ReportedAt
-- DeviceId
-
-**MaintenanceAction**
-- Id
-- ActionTaken
-- ActionDate
-- IncidentId
-
-Relationships:
-Device → Incidents → MaintenanceActions
-
-
----
-
-## How to Run the Project
-
+## How to Run
 1. Clone the repository
-2. Open the solution in **Visual Studio**
-3. Run database migrations:
+   git clone https://github.com/nicaciogaby/MedicalDeviceMaintenance.git
 
-Add-Migration InitialCreate
-Update-Database
+2. Open the solution in Visual Studio 2022
 
+3. Open Package Manager Console and run:
+   Update-Database
 
-4. Run the project
-5. Navigate to:
+4. Press F5 to run the application
 
-Devices
-/Incidents
-/MaintenanceActions
+5. The database will be seeded automatically with sample data
 
+## Database
+The application uses SQL Server LocalDB.
+Connection string is in appsettings.json.
 
----
-
-## Project Status
-
-The project currently includes the core functionality required for the **interim submission**.
-
-Future improvements may include:
-
-- Incident dashboard
-- Search and filtering
-- Improved UI
-- Reporting features
-
----
-
-## Author
-
-Gabriela Nicacio Lima  
-Higher Diploma in Science in Computing  
-Atlantic Technological University Sligo
+## Project Structure
+- Controllers/ — MVC Controllers for each entity
+- Models/      — Entity models with data annotations
+- Views/       — Razor views for all CRUD operations
+- Data/        — AppDbContext and SeedData
+- wwwroot/     — CSS, JavaScript and static files
