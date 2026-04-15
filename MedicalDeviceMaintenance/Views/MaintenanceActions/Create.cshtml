@@ -1,45 +1,53 @@
 ﻿@model MedicalDeviceMaintenance.Models.MaintenanceAction
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Log Maintenance Action";
 }
 
-<h1>Create</h1>
-
-<h4>MaintenanceAction</h4>
+<h1>Log Maintenance Action</h1>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ActionTaken" class="control-label"></label>
-                <input asp-for="ActionTaken" class="form-control" />
-                <span asp-validation-for="ActionTaken" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ActionDate" class="control-label"></label>
-                <input asp-for="ActionDate" class="form-control" />
-                <span asp-validation-for="ActionDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IncidentId" class="control-label"></label>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="IncidentId" class="control-label fw-bold"></label>
                 <select asp-for="IncidentId" class="form-control" asp-items="ViewBag.IncidentId">
                     <option value="">-- Select Incident --</option>
                 </select>
                 <span asp-validation-for="IncidentId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="form-group mb-3">
+                <label asp-for="ActionTaken" class="control-label fw-bold"></label>
+                <textarea asp-for="ActionTaken" class="form-control" rows="4"
+                          placeholder="Describe what maintenance was performed"></textarea>
+                <span asp-validation-for="ActionTaken" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TechnicianName" class="control-label fw-bold"></label>
+                <input asp-for="TechnicianName" class="form-control"
+                       placeholder="Enter technician full name" />
+                <span asp-validation-for="TechnicianName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Notes" class="control-label fw-bold"></label>
+                <textarea asp-for="Notes" class="form-control" rows="3"
+                          placeholder="Any additional notes (optional)"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Save Maintenance Action" class="btn btn-primary me-2" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

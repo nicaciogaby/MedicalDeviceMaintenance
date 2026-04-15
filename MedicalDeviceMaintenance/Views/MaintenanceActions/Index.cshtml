@@ -1,49 +1,76 @@
 ﻿@model IEnumerable<MedicalDeviceMaintenance.Models.MaintenanceAction>
-
 @{
     ViewData["Title"] = "Maintenance Actions";
 }
 
-<h1>Maintenance Actions</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Maintenance Actions</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fa-solid fa-plus me-1"></i>Log New Action
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<hr />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ActionTaken)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ActionDate)
-            </th>
-            <th>
-                Incident
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No maintenance actions recorded yet. Click "Log New Action" to get started.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ActionTaken)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ActionDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Incident.Title)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model.ActionTaken)</th>
+                <th>@Html.DisplayNameFor(model => model.TechnicianName)</th>
+                <th>@Html.DisplayNameFor(model => model.ActionDate)</th>
+                <th>Incident</th>
+                <th>Device</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (item.ActionTaken.Length > 50)
+                        {
+                            @item.ActionTaken.Substring(0, 50)
+
+                            <text>...</text>
+                        }
+                        else
+                        {
+                            @item.ActionTaken
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.TechnicianName)</td>
+                    <td>@item.ActionDate.ToShortDateString()</td>
+                    <td>
+                        <a asp-controller="Incidents" asp-action="Details"
+                           asp-route-id="@item.IncidentId" class="text-decoration-none">
+                            @Html.DisplayFor(modelItem => item.Incident.Title)
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Devices" asp-action="Details"
+                           asp-route-id="@item.Incident.DeviceId" class="text-decoration-none">
+                            @Html.DisplayFor(modelItem => item.Incident.Device.Name)
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-info me-1">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-warning me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
