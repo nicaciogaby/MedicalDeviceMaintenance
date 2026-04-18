@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MedicalDeviceMaintenance.Data;
 using MedicalDeviceMaintenance.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedicalDeviceMaintenance.Controllers
 {
+    [Authorize]
     public class IncidentsController : Controller
     {
         private readonly AppDbContext _context;

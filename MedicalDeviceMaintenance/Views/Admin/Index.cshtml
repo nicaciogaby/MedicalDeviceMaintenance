@@ -1,0 +1,70 @@
+﻿@model IEnumerable<MedicalDeviceMaintenance.Models.UserViewModel>
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Admin Panel</h1>
+    <a asp-controller="Account" asp-action="Register"
+       class="btn btn-success">
+        <i class="fa-solid fa-user-plus me-1"></i>Add New User
+    </a>
+</div>
+
+<hr />
+
+<div class="card">
+    <div class="card-header bg-white">
+        <i class="fa-solid fa-users me-2 text-primary"></i>
+        User Management
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <i class="fa-solid fa-user me-2 text-muted"></i>
+                            @user.Email
+                        </td>
+                        <td>
+                            @foreach (var role in user.Roles)
+                            {
+                                <span class="badge @(role == "Admin" ? "bg-danger" :
+                                                     role == "Technician" ? "bg-warning text-dark" :
+                                                     "bg-info")">
+                                    @role
+                                </span>
+                            }
+                            @if (!user.Roles.Any())
+                            {
+                                <span class="badge bg-secondary">No Role</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="EditRole" asp-route-id="@user.Id"
+                               class="btn btn-sm btn-warning me-1">
+                                <i class="fa-solid fa-user-pen me-1"></i>Change Role
+                            </a>
+                            <form asp-action="DeleteUser" method="post" class="d-inline"
+                                  onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fa-solid fa-trash me-1"></i>Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
