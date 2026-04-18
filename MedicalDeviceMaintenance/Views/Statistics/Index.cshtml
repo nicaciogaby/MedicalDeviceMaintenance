@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Statistics</h1>
+    <span class="text-muted small">
+        <i class="fa-regular fa-calendar me-1"></i>
+        @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+    </span>
+</div>
+
+<hr />
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <i class="fa-solid fa-stethoscope me-2 text-primary"></i>
+                Device Status Distribution
+            </div>
+            <div class="card-body">
+                <canvas id="deviceStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i>
+                Incidents by Severity
+            </div>
+            <div class="card-body">
+                <canvas id="incidentSeverityChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <i class="fa-solid fa-chart-line me-2 text-success"></i>
+                Incidents Reported — Last 6 Months
+            </div>
+            <div class="card-body">
+                <canvas id="incidentsPerMonthChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <i class="fa-solid fa-wrench me-2 text-warning"></i>
+                Incident Status
+            </div>
+            <div class="card-body">
+                <canvas id="incidentStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-white">
+                <i class="fa-solid fa-user-nurse me-2 text-info"></i>
+                Maintenance Actions by Technician
+            </div>
+            <div class="card-body">
+                <canvas id="technicianChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        new Chart(document.getElementById('deviceStatusChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Active', 'Maintenance', 'Retired', 'Out of Service'],
+                datasets: [{
+                    data: [
+        @ViewBag.ActiveDevices,
+        @ViewBag.MaintenanceDevices,
+        @ViewBag.RetiredDevices,
+        @ViewBag.OutOfServiceDevices
+                        ],
+                    backgroundColor: ['#27ae60', '#f39c12', '#7f8c8d', '#e74c3c'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        new Chart(document.getElementById('incidentSeverityChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Low', 'Medium', 'High', 'Critical'],
+                datasets: [{
+                    label: 'Number of Incidents',
+                    data: [
+        @ViewBag.LowIncidents,
+        @ViewBag.MediumIncidents,
+        @ViewBag.HighIncidents,
+        @ViewBag.CriticalIncidents
+                        ],
+                    backgroundColor: ['#2980b9', '#f39c12', '#e67e22', '#e74c3c'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        new Chart(document.getElementById('incidentStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Open', 'In Progress', 'Resolved'],
+                datasets: [{
+                    data: [
+        @ViewBag.OpenIncidents,
+        @ViewBag.InProgressIncidents,
+        @ViewBag.ResolvedIncidents
+                        ],
+                    backgroundColor: ['#e74c3c', '#f39c12', '#27ae60'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        @{
+            var names = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            var incidentsPerMonth = ViewBag.IncidentsPerMonth as IEnumerable<dynamic> ?? new List<dynamic>();
+            var monthLabels = string.Join(",", incidentsPerMonth.Select(x => $"'{names[(int)x.Month - 1]} {(int)x.Year}'"));
+            var monthData = string.Join(",", incidentsPerMonth.Select(x => (int)x.Count));
+        }
+
+            new Chart(document.getElementById('incidentsPerMonthChart'), {
+                type: 'line',
+                data: {
+                    labels: [@Html.Raw(monthLabels)],
+                    datasets: [{
+                        label: 'Incidents',
+                        data: [@Html.Raw(monthData)],
+                        borderColor: '#2e86c1',
+                        backgroundColor: 'rgba(46,134,193,0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#2e86c1',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+        @{
+            var techData = ViewBag.MaintenanceByTechnician as IEnumerable<dynamic> ?? new List<dynamic>();
+            var techLabels = string.Join(",", techData.Select(x => $"'{x.Technician}'"));
+            var techCounts = string.Join(",", techData.Select(x => (int)x.Count));
+        }
+
+            new Chart(document.getElementById('technicianChart'), {
+                type: 'bar',
+                data: {
+                    labels: [@Html.Raw(techLabels)],
+                    datasets: [{
+                        label: 'Maintenance Actions',
+                        data: [@Html.Raw(techCounts)],
+                        backgroundColor: '#1a5276',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+    </script>
+}
