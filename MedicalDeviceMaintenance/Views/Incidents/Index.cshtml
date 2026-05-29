@@ -5,9 +5,11 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Incidents</h1>
-    <a asp-action="Create" class="btn btn-primary">+ Report New Incident</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
+    {
+        <a asp-action="Create" class="btn btn-primary">+ Report New Incident</a>
+    }
 </div>
-
 <hr />
 
 @if (!Model.Any())
@@ -39,7 +41,6 @@ else
                         @if (item.Description.Length > 50)
                         {
                             @item.Description.Substring(0, 50)
-
                             <text>...</text>
                         }
                         else
@@ -49,32 +50,40 @@ else
                     </td>
                     <td>
                         <span class="badge @(item.Severity == "Critical" || item.Severity == "High" ? "bg-danger" :
-                                             item.Severity == "Medium" ? "bg-warning text-dark" :
-                                             "bg-info")">
-                            @item.Severity
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge @(item.Status == "Open" ? "bg-danger" :
-                                             item.Status == "In Progress" ? "bg-warning text-dark" :
-                                             "bg-success")">
-                            @item.Status
-                        </span>
-                    </td>
-                    <td>@item.DateReported.ToShortDateString()</td>
-                    <td>
-                        <a asp-controller="Devices" asp-action="Details"
-                           asp-route-id="@item.DeviceId">
-                            @Html.DisplayFor(modelItem => item.Device.Name)
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-info me-1">Details</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-warning me-1">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-danger">Delete</a>
+                                                                           item.Severity == "Medium" ? "bg-warning text-dark" :
+                                                                           "bg-info")">
+                    @item.Severity
+                </span>
+            </td>
+            <td>
+                <span class="badge @(item.Status == "Open" ? "bg-danger" :
+                                                                   item.Status == "In Progress" ? "bg-warning text-dark" :
+                                                                   "bg-success")">
+                    @item.Status
+                </span>
+            </td>
+            <td>@item.DateReported.ToShortDateString()</td>
+            <td>
+                <a asp-controller="Devices" asp-action="Details"
+                   asp-route-id="@item.DeviceId">
+                    @Html.DisplayFor(modelItem => item.Device.Name)
+                </a>
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id"
+                   class="btn btn-sm btn-info me-1">Details</a>
+
+                @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-warning me-1">Edit</a>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-danger">Delete</a>
+                        }
                     </td>
                 </tr>
             }

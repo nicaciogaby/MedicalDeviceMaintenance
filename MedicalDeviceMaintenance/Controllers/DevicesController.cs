@@ -41,6 +41,7 @@ namespace MedicalDeviceMaintenance.Controllers
         }
 
         // GET: Devices/Create
+        [Authorize(Roles = "Admin,Technician")]
         public IActionResult Create()
         {
             return View();
@@ -49,6 +50,7 @@ namespace MedicalDeviceMaintenance.Controllers
         // POST: Devices/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Technician")]
         public async Task<IActionResult> Create(
             [Bind("Id,Name,SerialNumber,Model,Manufacturer,Location,PurchaseDate,Status")] Device device)
         {
@@ -62,6 +64,7 @@ namespace MedicalDeviceMaintenance.Controllers
         }
 
         // GET: Devices/Edit/5
+        [Authorize(Roles = "Admin,Technician")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -75,6 +78,7 @@ namespace MedicalDeviceMaintenance.Controllers
         // POST: Devices/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Technician")]
         public async Task<IActionResult> Edit(int id,
             [Bind("Id,Name,SerialNumber,Model,Manufacturer,Location,PurchaseDate,Status")] Device device)
         {
@@ -98,6 +102,7 @@ namespace MedicalDeviceMaintenance.Controllers
         }
 
         // GET: Devices/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -114,6 +119,7 @@ namespace MedicalDeviceMaintenance.Controllers
         // POST: Devices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var device = await _context.Devices
