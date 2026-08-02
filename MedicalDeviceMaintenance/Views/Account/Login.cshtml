@@ -11,55 +11,179 @@
     <title>Login - MedTracker</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: var(--color-surface);
+        }
+
+        .login-shell {
+            min-height: 100vh;
+            display: flex;
+        }
+        /* Left panel — photo */
+        .login-visual {
+            position: relative;
+            flex: 1.1;
+            display: none;
+            background-color: var(--color-primary-dark);
+            background-image: url('~/images/login-hero.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+            .login-visual::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(200deg, rgba(20,63,121,0.35) 0%, rgba(12,20,32,0.88) 100%);
+            }
+
+            .login-visual .visual-content {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                height: 100%;
+                padding: 3rem;
+                color: #fff;
+            }
+
+                .login-visual .visual-content h2 {
+                    color: #fff;
+                    font-size: 1.6rem;
+                    max-width: 22rem;
+                }
+
+                .login-visual .visual-content p {
+                    color: rgba(255,255,255,0.78);
+                    max-width: 22rem;
+                    font-size: 0.92rem;
+                }
+
+        @@media (min-width: 900px) {
+            .login-visual {
+                display: block;
+            }
+        }
+
+        /* Right panel — form */
+        .login-form-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-form-card {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
+
+            .login-brand i {
+                color: var(--color-primary);
+                font-size: 1.5rem;
+            }
+
+            .login-brand span {
+                font-family: 'Manrope', sans-serif;
+                font-weight: 800;
+                font-size: 1.35rem;
+                color: var(--color-text);
+            }
+
+        .demo-accounts {
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: 0.85rem 1rem;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+
+            .demo-accounts strong {
+                color: var(--color-text);
+                display: block;
+                margin-bottom: 0.15rem;
+            }
+    </style>
 </head>
-<body style="background: linear-gradient(135deg, #1a5276 0%, #2e86c1 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+<body>
+    <div class="login-shell">
 
-    <div style="background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); padding: 2.5rem; width: 100%; max-width: 420px;">
-
-        <div class="text-center mb-4">
-            <i class="fa-solid fa-heart-pulse fa-3x" style="color: #e74c3c;"></i>
-            <h2 style="color: #1a5276; font-weight: 700;" class="mt-2">MedTracker</h2>
-            <p class="text-muted small">Medical Device Maintenance System</p>
+        <!-- Left: photo panel -->
+        <div class="login-visual">
+            <div class="visual-content">
+                <i class="fa-solid fa-heart-pulse mb-3" style="font-size: 2rem;"></i>
+                <h2>Keep every device accounted for.</h2>
+                <p>MedTracker centralizes equipment status, incidents and maintenance history for your facility.</p>
+            </div>
         </div>
 
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
+        <!-- Right: form panel -->
+        <div class="login-form-panel">
+            <div class="login-form-card fade-in">
 
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label fw-bold">Email</label>
-                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
-                <span asp-validation-for="Email" class="text-danger small"></span>
+                <div class="login-brand">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>MedTracker</span>
+                </div>
+                <p class="text-muted mb-4">Sign in to manage devices, incidents and maintenance.</p>
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="you@medtracker.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label small">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i>Sign in
+                    </button>
+
+                    <div class="text-center mb-3">
+                        <a asp-action="Register" class="text-decoration-none small" style="color: var(--color-primary);">
+                            <i class="fa-solid fa-user-plus me-1"></i>Create new account
+                        </a>
+                    </div>
+
+                    <div class="demo-accounts mono">
+                        <strong style="font-family: 'Inter', sans-serif;">Demo accounts</strong>
+                        Admin: admin@medtracker.com / Admin123!<br />
+                        Tech: tech@medtracker.com / Tech123!<br />
+                        Viewer: viewer@medtracker.com / Viewer123!
+                    </div>
+                </form>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label fw-bold">Password</label>
-                <input asp-for="Password" class="form-control" placeholder="Enter your password" />
-                <span asp-validation-for="Password" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3 form-check">
-                <input asp-for="RememberMe" class="form-check-input" />
-                <label asp-for="RememberMe" class="form-check-label small">Remember me</label>
-            </div>
-
-            <button type="submit" class="btn w-100 mb-3 text-white fw-bold"
-                    style="background: linear-gradient(135deg, #1a5276, #2e86c1); border: none; padding: 0.75rem; border-radius: 8px;">
-                <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
-            </button>
-
-            <div class="text-center mb-3">
-                <a asp-action="Register" class="text-decoration-none" style="color: #2e86c1;">
-                    <i class="fa-solid fa-user-plus me-1"></i>Create new account
-                </a>
-            </div>
-
-            <div style="background: #f8f9fa; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #555;">
-                <strong style="color: #1a5276;">Demo accounts:</strong><br>
-                Admin: admin@medtracker.com / Admin123!<br>
-                Tech: tech@medtracker.com / Tech123!<br>
-                Viewer: viewer@medtracker.com / Viewer123!
-            </div>
-        </form>
+        </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

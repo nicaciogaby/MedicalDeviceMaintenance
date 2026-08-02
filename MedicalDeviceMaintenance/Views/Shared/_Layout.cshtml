@@ -6,16 +6,22 @@
     <title>@ViewData["Title"] - MedTracker</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark top-navbar">
+    <nav class="navbar navbar-expand-lg top-navbar">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center gap-2"
                asp-controller="Home" asp-action="Index">
                 <i class="fa-solid fa-heart-pulse"></i>
                 <span>MedTracker</span>
+                <svg class="pulse-line" viewBox="0 0 60 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0,10 L14,10 L18,2 L23,18 L27,10 L60,10" />
+                </svg>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarMain">
@@ -43,7 +49,7 @@
                             <i class="fa-solid fa-wrench me-1"></i>Maintenance
                         </a>
                     </li>
-                   
+
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
@@ -64,7 +70,7 @@
                         <i class="fa-regular fa-clock me-1"></i>
                         <span id="currentTime"></span>
                     </span>
-                    <div class="vr bg-white opacity-25"></div>
+                    <div class="vr"></div>
 
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {

@@ -3,57 +3,64 @@
     ViewData["Title"] = "Edit Incident";
 }
 
-<h1>Edit Incident</h1>
-<hr />
+<div class="d-flex align-items-center gap-2 mb-4">
+    <h1 class="mb-0">Edit incident</h1>
+</div>
 
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="DateReported" />
-
-            <div class="form-group mb-3">
-                <label asp-for="Title" class="control-label fw-bold"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header">
+                <i class="fa-solid fa-triangle-exclamation me-2" style="color: var(--color-danger);"></i>
+                Incident details
             </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="DateReported" />
 
-            <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label fw-bold"></label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Severity" class="form-label"></label>
+                            <select asp-for="Severity" class="form-select" asp-items="ViewBag.Severity">
+                                <option value="">-- Select severity --</option>
+                            </select>
+                            <span asp-validation-for="Severity" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select" asp-items="ViewBag.Status">
+                                <option value="">-- Select status --</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="DeviceId" class="form-label"></label>
+                            <select asp-for="DeviceId" class="form-select" asp-items="ViewBag.DeviceId">
+                                <option value="">-- Select device --</option>
+                            </select>
+                            <span asp-validation-for="DeviceId" class="text-danger small"></span>
+                        </div>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Severity" class="control-label fw-bold"></label>
-                <select asp-for="Severity" class="form-control" asp-items="ViewBag.Severity">
-                    <option value="">-- Select Severity --</option>
-                </select>
-                <span asp-validation-for="Severity" class="text-danger"></span>
+                    <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid var(--color-border);">
+                        <input type="submit" value="Save changes" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
             </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Status" class="control-label fw-bold"></label>
-                <select asp-for="Status" class="form-control" asp-items="ViewBag.Status">
-                    <option value="">-- Select Status --</option>
-                </select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="DeviceId" class="control-label fw-bold"></label>
-                <select asp-for="DeviceId" class="form-control" asp-items="ViewBag.DeviceId">
-                    <option value="">-- Select Device --</option>
-                </select>
-                <span asp-validation-for="DeviceId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-4">
-                <input type="submit" value="Save Changes" class="btn btn-primary me-2" />
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 

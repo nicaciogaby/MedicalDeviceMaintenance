@@ -1,84 +1,127 @@
 ﻿@model IEnumerable<MedicalDeviceMaintenance.Models.Device>
 @{
     ViewData["Title"] = "Devices";
+    var total = Model.Count();
+    var active = Model.Count(d => d.Status == "Active");
+    var maintenance = Model.Count(d => d.Status == "Maintenance");
+    var other = total - active - maintenance;
 }
 
+<div class="hero-banner" style="background-image: url('~/images/devices-hero.jpg');">
+    <div class="hero-content">
+        <h1>Medical Devices</h1>
+        <p>Track equipment status, location and maintenance history across the facility.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card fade-in fade-in-1">
+            <div class="stat-value">@total</div>
+            <div class="stat-label">Total devices</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card fade-in fade-in-2">
+            <div class="stat-value" style="color: var(--color-success);">@active</div>
+            <div class="stat-label">Active</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card fade-in fade-in-3">
+            <div class="stat-value" style="color: var(--color-warning);">@maintenance</div>
+            <div class="stat-label">In maintenance</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card fade-in fade-in-4">
+            <div class="stat-value" style="color: var(--color-text-muted);">@other</div>
+            <div class="stat-label">Other</div>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Medical Devices</h1>
+    <h2 class="h5 mb-0 text-muted">Device list</h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
     {
-        <a asp-action="Create" class="btn btn-primary">+ Add New Device</a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fa-solid fa-plus me-1"></i>Add new device
+        </a>
     }
 </div>
-<hr />
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">
-        No devices found. Click "Add New Device" to get started.
+    <div class="card p-5 text-center fade-in">
+        <i class="fa-solid fa-stethoscope mb-3" style="font-size: 2.5rem; color: var(--color-border);"></i>
+        <p class="text-muted mb-0">No devices registered yet. Click "Add new device" to get started.</p>
     </div>
 }
 else
 {
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.Name)</th>
-                <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
-                <th>@Html.DisplayNameFor(model => model.Model)</th>
-                <th>@Html.DisplayNameFor(model => model.Manufacturer)</th>
-                <th>@Html.DisplayNameFor(model => model.Location)</th>
-                <th>@Html.DisplayNameFor(model => model.Status)</th>
-                <th>Incidents</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="card fade-in fade-in-2">
+        <table class="table table-hover mb-0">
+            <thead>
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.SerialNumber)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Model)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Manufacturer)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Location)</td>
-                    <td>
-                        <span class="badge @(item.Status == "Active" ? "bg-success" :
-                                                                           item.Status == "Maintenance" ? "bg-warning text-dark" :
-                                                                           "bg-danger")">
-                    @item.Status
-                </span>
-            </td>
-            <td>
-                @if (item.Incidents != null && item.Incidents.Any())
-                        {
-                            <span class="badge bg-secondary">
-                                @item.Incidents.Count() incident(s)
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="text-muted">None</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-info me-1">Details</a>
-
-                        @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.Id"
-                               class="btn btn-sm btn-warning me-1">Edit</a>
-                        }
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Delete" asp-route-id="@item.Id"
-                               class="btn btn-sm btn-danger">Delete</a>
-                        }
-                    </td>
+                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
+                    <th>@Html.DisplayNameFor(model => model.Model)</th>
+                    <th>@Html.DisplayNameFor(model => model.Manufacturer)</th>
+                    <th>@Html.DisplayNameFor(model => model.Location)</th>
+                    <th>@Html.DisplayNameFor(model => model.Status)</th>
+                    <th>Incidents</th>
+                    <th class="text-end">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">
+                            <i class="fa-solid fa-stethoscope me-2" style="color: var(--color-primary); opacity: 0.6;"></i>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td class="mono text-muted">@Html.DisplayFor(modelItem => item.SerialNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Model)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Manufacturer)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                        <td>
+                            <span class="badge @(item.Status == "Active" ? "bg-success" :
+                                                                                      item.Status == "Maintenance" ? "bg-warning" :
+                                                                                      "bg-danger")">
+                        @item.Status
+                    </span>
+                </td>
+                <td>
+                    @if (item.Incidents != null && item.Incidents.Any())
+                            {
+                                <span class="badge bg-light">
+                                    @item.Incidents.Count() incident(s)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">None</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-primary me-1">Details</a>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary" style="color: var(--color-danger); border-color: var(--color-danger);">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }

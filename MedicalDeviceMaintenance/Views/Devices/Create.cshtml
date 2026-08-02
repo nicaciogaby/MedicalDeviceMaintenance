@@ -3,67 +3,72 @@
     ViewData["Title"] = "Add New Device";
 }
 
-<h1>Add New Device</h1>
-<hr />
+<div class="d-flex align-items-center gap-2 mb-4">
+    <h1 class="mb-0">Add new device</h1>
+</div>
 
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="control-label fw-bold"></label>
-                <input asp-for="Name" class="form-control" placeholder="Enter device name" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header">
+                <i class="fa-solid fa-stethoscope me-2" style="color: var(--color-primary);"></i>
+                Device details
             </div>
+            <div class="card-body p-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
 
-            <div class="form-group mb-3">
-                <label asp-for="SerialNumber" class="control-label fw-bold"></label>
-                <input asp-for="SerialNumber" class="form-control" placeholder="Enter serial number" />
-                <span asp-validation-for="SerialNumber" class="text-danger"></span>
-            </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter device name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SerialNumber" class="form-label"></label>
+                            <input asp-for="SerialNumber" class="form-control" placeholder="Enter serial number" />
+                            <span asp-validation-for="SerialNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Model" class="form-label"></label>
+                            <input asp-for="Model" class="form-control" placeholder="Enter model" />
+                            <span asp-validation-for="Model" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Manufacturer" class="form-label"></label>
+                            <input asp-for="Manufacturer" class="form-control" placeholder="Enter manufacturer" />
+                            <span asp-validation-for="Manufacturer" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label"></label>
+                            <input asp-for="Location" class="form-control" placeholder="e.g. Ward 1, ICU, Emergency Room" />
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PurchaseDate" class="form-label"></label>
+                            <input asp-for="PurchaseDate" class="form-control" type="date" />
+                            <span asp-validation-for="PurchaseDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="">-- Select status --</option>
+                                <option value="Active">Active</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Retired">Retired</option>
+                                <option value="Out of Service">Out of service</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger small"></span>
+                        </div>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Model" class="control-label fw-bold"></label>
-                <input asp-for="Model" class="form-control" placeholder="Enter model" />
-                <span asp-validation-for="Model" class="text-danger"></span>
+                    <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid var(--color-border);">
+                        <input type="submit" value="Create device" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+                    </div>
+                </form>
             </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Manufacturer" class="control-label fw-bold"></label>
-                <input asp-for="Manufacturer" class="form-control" placeholder="Enter manufacturer" />
-                <span asp-validation-for="Manufacturer" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Location" class="control-label fw-bold"></label>
-                <input asp-for="Location" class="form-control" placeholder="e.g. Ward 1, ICU, Emergency Room" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="PurchaseDate" class="control-label fw-bold"></label>
-                <input asp-for="PurchaseDate" class="form-control" type="date" />
-                <span asp-validation-for="PurchaseDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Status" class="control-label fw-bold"></label>
-                <select asp-for="Status" class="form-control">
-                    <option value="">-- Select Status --</option>
-                    <option value="Active">Active</option>
-                    <option value="Maintenance">Maintenance</option>
-                    <option value="Retired">Retired</option>
-                    <option value="Out of Service">Out of Service</option>
-                </select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-4">
-                <input type="submit" value="Create Device" class="btn btn-primary me-2" />
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 

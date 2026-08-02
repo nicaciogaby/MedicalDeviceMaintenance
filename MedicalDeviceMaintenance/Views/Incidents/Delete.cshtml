@@ -3,73 +3,60 @@
     ViewData["Title"] = "Delete Incident";
 }
 
-<h1>Delete Incident</h1>
-<hr />
-
-<div class="alert alert-danger" role="alert">
-    <strong>Warning:</strong> Are you sure you want to delete this incident?
-    This action cannot be undone and will also remove all associated maintenance actions.
-</div>
+<h1 class="mb-4">Delete incident</h1>
 
 <div class="row">
-    <div class="col-md-6">
-        <h4>Incident Details</h4>
-        <dl class="row">
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.Title)
-            </dd>
+    <div class="col-lg-7">
+        <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" role="alert">
+            <i class="fa-solid fa-triangle-exclamation mt-1"></i>
+            <div>
+                <strong>This can't be undone.</strong>
+                Deleting this incident also removes all associated maintenance actions.
+            </div>
+        </div>
 
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.Description)
-            </dd>
+        <div class="card fade-in">
+            <div class="card-header">
+                <i class="fa-solid fa-triangle-exclamation me-2" style="color: var(--color-danger);"></i>
+                Incident details
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted fw-500">@Html.DisplayNameFor(model => model.Title)</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Title)</dd>
 
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Severity)
-            </dt>
-            <dd class="col-sm-8">
-                <span class="badge @(Model.Severity == "Critical" || Model.Severity == "High" ? "bg-danger" :
-                                     Model.Severity == "Medium" ? "bg-warning text-dark" :
-                                     "bg-info")">
-                    @Html.DisplayFor(model => model.Severity)
-                </span>
-            </dd>
+                    <dt class="col-sm-4 text-muted fw-500">@Html.DisplayNameFor(model => model.Description)</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
 
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Status)
-            </dt>
-            <dd class="col-sm-8">
-                <span class="badge @(Model.Status == "Open" ? "bg-danger" :
-                                     Model.Status == "In Progress" ? "bg-warning text-dark" :
-                                     "bg-success")">
-                    @Html.DisplayFor(model => model.Status)
-                </span>
-            </dd>
+                    <dt class="col-sm-4 text-muted fw-500">@Html.DisplayNameFor(model => model.Severity)</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.Severity == "Critical" || Model.Severity == "High" ? "bg-danger" :
+                                                                           Model.Severity == "Medium" ? "bg-warning" : "bg-info")">
+                            @Html.DisplayFor(model => model.Severity)
+                        </span>
+                    </dd>
 
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.DateReported)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.DateReported)
-            </dd>
+                    <dt class="col-sm-4 text-muted fw-500">@Html.DisplayNameFor(model => model.Status)</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.Status == "Open" ? "bg-danger" :
+                                                                           Model.Status == "In Progress" ? "bg-warning" : "bg-success")">
+                            @Html.DisplayFor(model => model.Status)
+                        </span>
+                    </dd>
 
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Device)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.Device.Name)
-            </dd>
-        </dl>
+                    <dt class="col-sm-4 text-muted fw-500">@Html.DisplayNameFor(model => model.DateReported)</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.DateReported)</dd>
 
-        <form asp-action="Delete">
-            <input type="hidden" asp-for="Id" />
-            <input type="submit" value="Yes, Delete Incident" class="btn btn-danger me-2" />
-            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-        </form>
+                    <dt class="col-sm-4 text-muted fw-500">@Html.DisplayNameFor(model => model.Device)</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Device.Name)</dd>
+                </dl>
+
+                <form asp-action="Delete" class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid var(--color-border);">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="submit" value="Yes, delete incident" class="btn btn-danger" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
     </div>
 </div>

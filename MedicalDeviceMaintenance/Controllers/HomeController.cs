@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 
-
 namespace MedicalDeviceMaintenance.Controllers
 {
     [Authorize]
@@ -34,7 +33,6 @@ namespace MedicalDeviceMaintenance.Controllers
                 .OrderByDescending(i => i.DateReported)
                 .Take(5)
                 .ToListAsync();
-
             return View();
         }
 
