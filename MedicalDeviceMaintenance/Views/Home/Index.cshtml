@@ -2,53 +2,55 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<!-- Page Title -->
-<div class="d-flex justify-content-between align-items-center mb-4 fade-in">
-    <div>
-        <h1 class="mb-1">Dashboard</h1>
-        <p class="text-muted mb-0">
-            <i class="fa-regular fa-calendar me-1"></i>
-            @DateTime.Now.ToString("dddd, dd MMMM yyyy")
-        </p>
-    </div>
-    <div class="d-flex gap-2">
-        <a asp-controller="Devices" asp-action="Create" class="btn btn-primary">
-            <i class="fa-solid fa-plus me-1"></i>Add Device
-        </a>
-        <a asp-controller="Incidents" asp-action="Create" class="btn btn-outline-danger">
-            <i class="fa-solid fa-triangle-exclamation me-1"></i>Report Incident
-        </a>
+<!-- Hero -->
+<div class="hero-banner" style="background-image: url('~/images/dashboard-hero.jpg');">
+    <div class="hero-content d-flex justify-content-between align-items-end flex-wrap gap-3">
+        <div>
+            <h1>Dashboard</h1>
+            <p>
+                <i class="fa-regular fa-calendar me-1"></i>
+                @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Devices" asp-action="Create" class="btn btn-primary">
+                <i class="fa-solid fa-plus me-1"></i>Add device
+            </a>
+            <a asp-controller="Incidents" asp-action="Create" class="btn btn-outline-light">
+                <i class="fa-solid fa-triangle-exclamation me-1"></i>Report incident
+            </a>
+        </div>
     </div>
 </div>
 
 <!-- Stat Cards -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3 fade-in fade-in-1">
-        <div class="stat-card blue">
-            <div class="stat-number" id="countTotal">@(ViewBag.TotalDevices ?? 0)</div>
-            <div class="stat-label">Total Devices</div>
+        <div class="card stat-card h-100">
             <i class="fa-solid fa-stethoscope stat-icon"></i>
+            <div class="stat-value" id="countTotal">@(ViewBag.TotalDevices ?? 0)</div>
+            <div class="stat-label">Total devices</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3 fade-in fade-in-2">
-        <div class="stat-card green">
-            <div class="stat-number" id="countActive">@(ViewBag.ActiveDevices ?? 0)</div>
-            <div class="stat-label">Active Devices</div>
+        <div class="card stat-card h-100">
             <i class="fa-solid fa-circle-check stat-icon"></i>
+            <div class="stat-value" id="countActive" style="color: var(--color-success);">@(ViewBag.ActiveDevices ?? 0)</div>
+            <div class="stat-label">Active devices</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3 fade-in fade-in-3">
-        <div class="stat-card orange">
-            <div class="stat-number" id="countMaintenance">@(ViewBag.MaintenanceDevices ?? 0)</div>
-            <div class="stat-label">In Maintenance</div>
+        <div class="card stat-card h-100">
             <i class="fa-solid fa-wrench stat-icon"></i>
+            <div class="stat-value" id="countMaintenance" style="color: var(--color-warning);">@(ViewBag.MaintenanceDevices ?? 0)</div>
+            <div class="stat-label">In maintenance</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3 fade-in fade-in-4">
-        <div class="stat-card red">
-            <div class="stat-number" id="countIncidents">@(ViewBag.OpenIncidents ?? 0)</div>
-            <div class="stat-label">Open Incidents</div>
+        <div class="card stat-card h-100">
             <i class="fa-solid fa-triangle-exclamation stat-icon"></i>
+            <div class="stat-value" id="countIncidents" style="color: var(--color-danger);">@(ViewBag.OpenIncidents ?? 0)</div>
+            <div class="stat-label">Open incidents</div>
         </div>
     </div>
 </div>
@@ -59,26 +61,26 @@
     <!-- Recent Incidents Table -->
     <div class="col-lg-8 fade-in fade-in-2">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center bg-white">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <span>
-                    <i class="fa-solid fa-clock-rotate-left me-2 text-danger"></i>
-                    Recent Incidents
+                    <i class="fa-solid fa-clock-rotate-left me-2" style="color: var(--color-primary);"></i>
+                    Recent incidents
                 </span>
                 <a asp-controller="Incidents" asp-action="Index"
-                   class="btn btn-sm btn-outline-primary">View All</a>
+                   class="btn btn-sm btn-outline-primary">View all</a>
             </div>
             <div class="card-body p-0">
                 @if (ViewBag.RecentIncidents == null || ((IEnumerable<MedicalDeviceMaintenance.Models.Incident>)ViewBag.RecentIncidents).Count() == 0)
                 {
                     <div class="text-center py-5 text-muted">
-                        <i class="fa-solid fa-circle-check fa-2x mb-2 text-success"></i>
+                        <i class="fa-solid fa-circle-check fa-2x mb-2" style="color: var(--color-success);"></i>
                         <p class="mb-0">No incidents recorded.</p>
                     </div>
                 }
                 else
                 {
                     <table class="table table-hover mb-0">
-                        <thead class="table-dark">
+                        <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Device</th>
@@ -100,21 +102,21 @@
                                     <td class="text-muted">@incident.Device?.Name</td>
                                     <td>
                                         <span class="badge @(incident.Severity == "Critical" || incident.Severity == "High" ? "bg-danger" :
-                                                             incident.Severity == "Medium" ? "bg-warning text-dark" : "bg-info")">
-                                            @incident.Severity
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge @(incident.Status == "Open" ? "bg-danger" :
-                                                             incident.Status == "In Progress" ? "bg-warning text-dark" : "bg-success")">
-                                            @incident.Status
-                                        </span>
-                                    </td>
-                                    <td class="text-muted small">
-                                        @incident.DateReported.ToShortDateString()
-                                    </td>
-                                </tr>
-                            }
+                                                                                                           incident.Severity == "Medium" ? "bg-warning" : "bg-info")">
+                                    @incident.Severity
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge @(incident.Status == "Open" ? "bg-danger" :
+                                                                                                   incident.Status == "In Progress" ? "bg-warning" : "bg-success")">
+                                    @incident.Status
+                                </span>
+                            </td>
+                            <td class="text-muted small">
+                                @incident.DateReported.ToShortDateString()
+                            </td>
+                        </tr>
+                                                }
                         </tbody>
                     </table>
                 }
@@ -125,34 +127,36 @@
     <!-- Quick Links -->
     <div class="col-lg-4 fade-in fade-in-3">
         <div class="card h-100">
-            <div class="card-header bg-white">
-                <i class="fa-solid fa-bolt me-2 text-warning"></i>Quick Actions
+            <div class="card-header">
+                <i class="fa-solid fa-bolt me-2" style="color: var(--color-primary);"></i>Quick actions
             </div>
-            <div class="card-body d-flex flex-column gap-2">
-                <a asp-controller="Devices" asp-action="Index"
-                   class="btn btn-outline-primary w-100 text-start">
-                    <i class="fa-solid fa-stethoscope me-2"></i>Manage Devices
-                </a>
-                <a asp-controller="Devices" asp-action="Create"
-                   class="btn btn-outline-success w-100 text-start">
-                    <i class="fa-solid fa-plus me-2"></i>Add New Device
-                </a>
-                <a asp-controller="Incidents" asp-action="Index"
-                   class="btn btn-outline-danger w-100 text-start">
-                    <i class="fa-solid fa-triangle-exclamation me-2"></i>View Incidents
-                </a>
-                <a asp-controller="Incidents" asp-action="Create"
-                   class="btn btn-outline-warning w-100 text-start">
-                    <i class="fa-solid fa-file-circle-plus me-2"></i>Report Incident
-                </a>
-                <a asp-controller="MaintenanceActions" asp-action="Index"
-                   class="btn btn-outline-info w-100 text-start">
-                    <i class="fa-solid fa-wrench me-2"></i>View Maintenance
-                </a>
-                <a asp-controller="MaintenanceActions" asp-action="Create"
-                   class="btn btn-outline-secondary w-100 text-start">
-                    <i class="fa-solid fa-screwdriver-wrench me-2"></i>Log Maintenance
-                </a>
+            <div class="card-body">
+                <div class="quick-link-grid">
+                    <a asp-controller="Devices" asp-action="Index" class="quick-link-tile">
+                        <i class="fa-solid fa-stethoscope"></i>
+                        Manage devices
+                    </a>
+                    <a asp-controller="Devices" asp-action="Create" class="quick-link-tile">
+                        <i class="fa-solid fa-plus"></i>
+                        Add device
+                    </a>
+                    <a asp-controller="Incidents" asp-action="Index" class="quick-link-tile">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        View incidents
+                    </a>
+                    <a asp-controller="Incidents" asp-action="Create" class="quick-link-tile">
+                        <i class="fa-solid fa-file-circle-plus"></i>
+                        Report incident
+                    </a>
+                    <a asp-controller="MaintenanceActions" asp-action="Index" class="quick-link-tile">
+                        <i class="fa-solid fa-wrench"></i>
+                        View maintenance
+                    </a>
+                    <a asp-controller="MaintenanceActions" asp-action="Create" class="quick-link-tile">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        Log maintenance
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -166,7 +170,7 @@
             if (!el) return;
             let current = 0;
             const duration = 800;
-            const step = Math.ceil(target / (duration / 16));
+            const step = Math.ceil(target / (duration / 16)) || 1;
             const timer = setInterval(() => {
                 current += step;
                 if (current >= target) {

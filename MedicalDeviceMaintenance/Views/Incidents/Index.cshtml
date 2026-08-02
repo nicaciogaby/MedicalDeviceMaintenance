@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h2 class="h5 mb-0 text-muted">Incident list</h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
     {
@@ -50,6 +50,44 @@
         </a>
     }
 </div>
+
+@if (Model.Any())
+{
+    <div class="card mb-3 fade-in">
+        <div class="card-body py-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-5">
+                    <div class="position-relative">
+                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); color:var(--color-text-muted); font-size:0.85rem;"></i>
+                        <input type="text" id="incidentSearch" class="form-control" style="padding-left:2.2rem;"
+                               placeholder="Search by title, description or device..." />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="incidentSeverityFilter" class="form-select">
+                        <option value="">All severities</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="incidentStatusFilter" class="form-select">
+                        <option value="">All statuses</option>
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <span class="text-muted small" id="incidentResultCount"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @if (!Model.Any())
 {
@@ -61,7 +99,7 @@
 else
 {
     <div class="card fade-in fade-in-2">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover mb-0" id="incidentTable">
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Title)</th>
@@ -73,10 +111,10 @@ else
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="incidentTableBody">
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr data-severity="@item.Severity" data-status="@item.Status">
                         <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Title)</td>
                         <td class="text-muted">
                             @if (item.Description.Length > 50)
@@ -126,5 +164,58 @@ else
                 }
             </tbody>
         </table>
+        <div id="incidentNoResults" class="text-center py-5 text-muted" style="display:none;">
+            <i class="fa-solid fa-magnifying-glass mb-2" style="font-size: 1.8rem; color: var(--color-border);"></i>
+            <p class="mb-0">No incidents match your search.</p>
+        </div>
     </div>
 }
+
+@section Scripts {
+    <script>
+        (function () {
+            const search = document.getElementById('incidentSearch');
+            const severityFilter = document.getElementById('incidentSeverityFilter');
+            const statusFilter = document.getElementById('incidentStatusFilter');
+            const rows = document.querySelectorAll('#incidentTableBody tr');
+            const resultCount = document.getElementById('incidentResultCount');
+            const noResults = document.getElementById('incidentNoResults');
+            const table = document.getElementById('incidentTable');
+
+            function applyFilters() {
+                const term = (search?.value || '').toLowerCase().trim();
+                const severity = severityFilter?.value || '';
+                const status = statusFilter?.value || '';
+                let visible = 0;
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const rowSeverity = row.getAttribute('data-severity') || '';
+                    const rowStatus = row.getAttribute('data-status') || '';
+                    const matchesText = term === '' || text.includes(term);
+                    const matchesSeverity = severity === '' || rowSeverity === severity;
+                    const matchesStatus = status === '' || rowStatus === status;
+                    const show = matchesText && matchesSeverity && matchesStatus;
+                    row.style.display = show ? '' : 'none';
+                    if (show) visible++;
+                });
+
+                if (resultCount) {
+                    resultCount.textContent = visible + ' / ' + rows.length;
+                }
+                if (noResults) {
+                    noResults.style.display = visible === 0 ? 'block' : 'none';
+                }
+                if (table) {
+                    table.style.display = visible === 0 ? 'none' : '';
+                }
+            }
+
+            search?.addEventListener('input', applyFilters);
+            severityFilter?.addEventListener('change', applyFilters);
+            statusFilter?.addEventListener('change', applyFilters);
+            applyFilters();
+        })();
+    </script>
+}
+

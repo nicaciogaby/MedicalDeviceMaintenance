@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalDeviceMaintenance.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class StatisticsController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,53 +17,56 @@ namespace MedicalDeviceMaintenance.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Device status counts
-            ViewBag.ActiveDevices = await _context.Devices
-                .CountAsync(d => d.Status == "Active");
-            ViewBag.MaintenanceDevices = await _context.Devices
-                .CountAsync(d => d.Status == "Maintenance");
-            ViewBag.RetiredDevices = await _context.Devices
-                .CountAsync(d => d.Status == "Retired");
-            ViewBag.OutOfServiceDevices = await _context.Devices
-                .CountAsync(d => d.Status == "Out of Service");
+            var deviceStatusCounts = await _context.Devices
+                .GroupBy(d => d.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
 
-            // Incident severity counts
-            ViewBag.LowIncidents = await _context.Incidents
-                .CountAsync(i => i.Severity == "Low");
-            ViewBag.MediumIncidents = await _context.Incidents
-                .CountAsync(i => i.Severity == "Medium");
-            ViewBag.HighIncidents = await _context.Incidents
-                .CountAsync(i => i.Severity == "High");
-            ViewBag.CriticalIncidents = await _context.Incidents
-                .CountAsync(i => i.Severity == "Critical");
+            ViewBag.DeviceStatusLabels = deviceStatusCounts.Select(x => x.Status).ToList();
+            ViewBag.DeviceStatusData = deviceStatusCounts.Select(x => x.Count).ToList();
 
-            // Incident status counts
-            ViewBag.OpenIncidents = await _context.Incidents
-                .CountAsync(i => i.Status == "Open");
-            ViewBag.InProgressIncidents = await _context.Incidents
-                .CountAsync(i => i.Status == "In Progress");
-            ViewBag.ResolvedIncidents = await _context.Incidents
-                .CountAsync(i => i.Status == "Resolved");
+            var severityCounts = await _context.Incidents
+                .GroupBy(i => i.Severity)
+                .Select(g => new { Severity = g.Key, Count = g.Count() })
+                .ToListAsync();
 
-            // Maintenance by technician
-            ViewBag.MaintenanceByTechnician = await _context.MaintenanceActions
+            ViewBag.SeverityLabels = severityCounts.Select(x => x.Severity).ToList();
+            ViewBag.SeverityData = severityCounts.Select(x => x.Count).ToList();
+
+            var sixMonthsAgo = DateTime.Now.AddMonths(-5);
+            var incidentsByMonth = await _context.Incidents
+                .Where(i => i.DateReported >= new DateTime(sixMonthsAgo.Year, sixMonthsAgo.Month, 1))
+                .ToListAsync();
+
+            var monthBuckets = Enumerable.Range(0, 6)
+                .Select(offset => DateTime.Now.AddMonths(-5 + offset))
+                .Select(d => new { Year = d.Year, Month = d.Month, Label = d.ToString("MMM yyyy") })
+                .ToList();
+
+            var monthlyLabels = monthBuckets.Select(b => b.Label).ToList();
+            var monthlyData = monthBuckets
+                .Select(b => incidentsByMonth.Count(i => i.DateReported.Year == b.Year && i.DateReported.Month == b.Month))
+                .ToList();
+
+            ViewBag.MonthlyLabels = monthlyLabels;
+            ViewBag.MonthlyData = monthlyData;
+
+            var byTechnician = await _context.MaintenanceActions
                 .GroupBy(m => m.TechnicianName)
                 .Select(g => new { Technician = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .Take(8)
                 .ToListAsync();
 
-            // Incidents per month (last 6 months)
-            var sixMonthsAgo = DateTime.Now.AddMonths(-6);
-            ViewBag.IncidentsPerMonth = await _context.Incidents
-                .Where(i => i.DateReported >= sixMonthsAgo)
-                .GroupBy(i => new { i.DateReported.Year, i.DateReported.Month })
-                .Select(g => new {
-                    Month = g.Key.Month,
-                    Year = g.Key.Year,
-                    Count = g.Count()
-                })
-                .OrderBy(g => g.Year)
-                .ThenBy(g => g.Month)
-                .ToListAsync();
+            ViewBag.TechnicianLabels = byTechnician.Select(x => x.Technician).ToList();
+            ViewBag.TechnicianData = byTechnician.Select(x => x.Count).ToList();
+
+            ViewBag.TotalDevices = await _context.Devices.CountAsync();
+            ViewBag.TotalIncidents = await _context.Incidents.CountAsync();
+            ViewBag.TotalMaintenanceActions = await _context.MaintenanceActions.CountAsync();
+            ViewBag.AvgIncidentsPerDevice = ViewBag.TotalDevices > 0
+                ? Math.Round((double)ViewBag.TotalIncidents / (int)ViewBag.TotalDevices, 1)
+                : 0;
 
             return View();
         }

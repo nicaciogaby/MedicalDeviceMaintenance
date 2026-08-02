@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h2 class="h5 mb-0 text-muted">Device list</h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
     {
@@ -50,6 +50,35 @@
         </a>
     }
 </div>
+
+@if (Model.Any())
+{
+    <div class="card mb-3 fade-in">
+        <div class="card-body py-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-7">
+                    <div class="position-relative">
+                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); color:var(--color-text-muted); font-size:0.85rem;"></i>
+                        <input type="text" id="deviceSearch" class="form-control" style="padding-left:2.2rem;"
+                               placeholder="Search by name, serial number, model, manufacturer or location..." />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="deviceStatusFilter" class="form-select">
+                        <option value="">All statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Retired">Retired</option>
+                        <option value="Out of Service">Out of service</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <span class="text-muted small" id="deviceResultCount"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @if (!Model.Any())
 {
@@ -61,7 +90,7 @@
 else
 {
     <div class="card fade-in fade-in-2">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover mb-0" id="deviceTable">
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Name)</th>
@@ -74,10 +103,10 @@ else
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="deviceTableBody">
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr data-status="@item.Status">
                         <td class="fw-semibold">
                             <i class="fa-solid fa-stethoscope me-2" style="color: var(--color-primary); opacity: 0.6;"></i>
                             @Html.DisplayFor(modelItem => item.Name)
@@ -123,5 +152,53 @@ else
                 }
             </tbody>
         </table>
+        <div id="deviceNoResults" class="text-center py-5 text-muted" style="display:none;">
+            <i class="fa-solid fa-magnifying-glass mb-2" style="font-size: 1.8rem; color: var(--color-border);"></i>
+            <p class="mb-0">No devices match your search.</p>
+        </div>
     </div>
 }
+
+@section Scripts {
+    <script>
+        (function () {
+            const search = document.getElementById('deviceSearch');
+            const statusFilter = document.getElementById('deviceStatusFilter');
+            const rows = document.querySelectorAll('#deviceTableBody tr');
+            const resultCount = document.getElementById('deviceResultCount');
+            const noResults = document.getElementById('deviceNoResults');
+            const table = document.getElementById('deviceTable');
+
+            function applyFilters() {
+                const term = (search?.value || '').toLowerCase().trim();
+                const status = statusFilter?.value || '';
+                let visible = 0;
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const rowStatus = row.getAttribute('data-status') || '';
+                    const matchesText = term === '' || text.includes(term);
+                    const matchesStatus = status === '' || rowStatus === status;
+                    const show = matchesText && matchesStatus;
+                    row.style.display = show ? '' : 'none';
+                    if (show) visible++;
+                });
+
+                if (resultCount) {
+                    resultCount.textContent = visible + ' of ' + rows.length + ' devices';
+                }
+                if (noResults) {
+                    noResults.style.display = visible === 0 ? 'block' : 'none';
+                }
+                if (table) {
+                    table.style.display = visible === 0 ? 'none' : '';
+                }
+            }
+
+            search?.addEventListener('input', applyFilters);
+            statusFilter?.addEventListener('change', applyFilters);
+            applyFilters();
+        })();
+    </script>
+}
+

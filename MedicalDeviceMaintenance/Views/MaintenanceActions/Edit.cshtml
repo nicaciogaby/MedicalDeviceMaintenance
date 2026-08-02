@@ -3,47 +3,55 @@
     ViewData["Title"] = "Edit Maintenance Action";
 }
 
-<h1>Edit Maintenance Action</h1>
-<hr />
+<div class="d-flex align-items-center gap-2 mb-4">
+    <h1 class="mb-0">Edit maintenance action</h1>
+</div>
 
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="ActionDate" />
-
-            <div class="form-group mb-3">
-                <label asp-for="IncidentId" class="control-label fw-bold"></label>
-                <select asp-for="IncidentId" class="form-control" asp-items="ViewBag.IncidentId">
-                    <option value="">-- Select Incident --</option>
-                </select>
-                <span asp-validation-for="IncidentId" class="text-danger"></span>
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header">
+                <i class="fa-solid fa-wrench me-2" style="color: var(--color-primary);"></i>
+                Action details
             </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ActionDate" />
 
-            <div class="form-group mb-3">
-                <label asp-for="ActionTaken" class="control-label fw-bold"></label>
-                <textarea asp-for="ActionTaken" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="ActionTaken" class="text-danger"></span>
-            </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="IncidentId" class="form-label"></label>
+                            <select asp-for="IncidentId" class="form-select" asp-items="ViewBag.IncidentId">
+                                <option value="">-- Select incident --</option>
+                            </select>
+                            <span asp-validation-for="IncidentId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="ActionTaken" class="form-label"></label>
+                            <textarea asp-for="ActionTaken" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="ActionTaken" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TechnicianName" class="form-label"></label>
+                            <input asp-for="TechnicianName" class="form-control" />
+                            <span asp-validation-for="TechnicianName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label"></label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="TechnicianName" class="control-label fw-bold"></label>
-                <input asp-for="TechnicianName" class="form-control" />
-                <span asp-validation-for="TechnicianName" class="text-danger"></span>
+                    <div class="d-flex gap-2 mt-4 pt-3" style="border-top: 1px solid var(--color-border);">
+                        <input type="submit" value="Save changes" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
             </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Notes" class="control-label fw-bold"></label>
-                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-4">
-                <input type="submit" value="Save Changes" class="btn btn-primary me-2" />
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 

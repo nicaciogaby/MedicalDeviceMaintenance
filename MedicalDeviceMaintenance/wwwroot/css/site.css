@@ -405,6 +405,50 @@ code, .mono, .data-value, .badge, .id-tag, table td.numeric {
     }
 
 /* ---------------------------------------------------------
+   Quick link tiles — icon grid for dashboard shortcuts
+   --------------------------------------------------------- */
+.quick-link-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.quick-link-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.1rem 0.5rem;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background-color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+    .quick-link-tile:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        background-color: var(--color-surface);
+        border-color: var(--color-primary);
+        color: var(--color-text);
+    }
+
+    .quick-link-tile i {
+        font-size: 1.4rem;
+        color: var(--color-primary);
+    }
+
+    .quick-link-tile:hover i {
+        color: var(--color-accent-dark);
+    }
+
+/* ---------------------------------------------------------
    Tables
    --------------------------------------------------------- */
 .table {
@@ -468,6 +512,12 @@ code, .mono, .data-value, .badge, .id-tag, table td.numeric {
     .badge.bg-info {
         background-color: var(--color-primary-soft) !important;
         color: var(--color-primary) !important;
+    }
+
+    .badge.bg-secondary {
+        background-color: var(--color-bg) !important;
+        color: var(--color-text-muted) !important;
+        border: 1px solid var(--color-border);
     }
 
 .fw-500 {
