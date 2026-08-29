@@ -6,14 +6,12 @@
     var inProgress = Model.Count(i => i.Status == "In Progress");
     var critical = Model.Count(i => i.Severity == "Critical" || i.Severity == "High");
 }
-
-<div class="hero-banner" style="background-image: url('~/images/incidents-hero.jpg');">
+<div class="hero-banner" style="background-image: url('/images/login-hero.jpg');">
     <div class="hero-content">
         <h1>Incidents</h1>
         <p>Report, track and resolve equipment issues across the facility.</p>
     </div>
 </div>
-
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="card stat-card fade-in fade-in-1">
@@ -40,7 +38,6 @@
         </div>
     </div>
 </div>
-
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h2 class="h5 mb-0 text-muted">Incident list</h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
@@ -50,7 +47,6 @@
         </a>
     }
 </div>
-
 @if (Model.Any())
 {
     <div class="card mb-3 fade-in">
@@ -88,7 +84,6 @@
         </div>
     </div>
 }
-
 @if (!Model.Any())
 {
     <div class="card p-5 text-center fade-in">
@@ -129,13 +124,13 @@ else
                         </td>
                         <td>
                             <span class="badge @(item.Severity == "Critical" || item.Severity == "High" ? "bg-danger" :
-                                                                                      item.Severity == "Medium" ? "bg-warning" : "bg-info")">
+                                                                                                                        item.Severity == "Medium" ? "bg-warning" : "bg-info")">
                         @item.Severity
                     </span>
                 </td>
                 <td>
                     <span class="badge @(item.Status == "Open" ? "bg-danger" :
-                                                                              item.Status == "In Progress" ? "bg-warning" : "bg-success")">
+                                                                                                        item.Status == "In Progress" ? "bg-warning" : "bg-success")">
                         @item.Status
                     </span>
                 </td>
@@ -170,7 +165,6 @@ else
         </div>
     </div>
 }
-
 @section Scripts {
     <script>
         (function () {
@@ -181,13 +175,11 @@ else
             const resultCount = document.getElementById('incidentResultCount');
             const noResults = document.getElementById('incidentNoResults');
             const table = document.getElementById('incidentTable');
-
             function applyFilters() {
                 const term = (search?.value || '').toLowerCase().trim();
                 const severity = severityFilter?.value || '';
                 const status = statusFilter?.value || '';
                 let visible = 0;
-
                 rows.forEach(row => {
                     const text = row.textContent.toLowerCase();
                     const rowSeverity = row.getAttribute('data-severity') || '';
@@ -199,7 +191,6 @@ else
                     row.style.display = show ? '' : 'none';
                     if (show) visible++;
                 });
-
                 if (resultCount) {
                     resultCount.textContent = visible + ' / ' + rows.length;
                 }
@@ -210,7 +201,6 @@ else
                     table.style.display = visible === 0 ? 'none' : '';
                 }
             }
-
             search?.addEventListener('input', applyFilters);
             severityFilter?.addEventListener('change', applyFilters);
             statusFilter?.addEventListener('change', applyFilters);
@@ -218,4 +208,3 @@ else
         })();
     </script>
 }
-

@@ -1,14 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Statistics";
 }
-
-<div class="hero-banner" style="background-image: url('~/images/statistics-hero.jpg');">
+<div class="hero-banner" style="background-image: url('/images/login-hero.jpg');">
     <div class="hero-content">
         <h1>Statistics</h1>
         <p>Trends across devices, incidents and maintenance activity.</p>
     </div>
 </div>
-
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="card stat-card fade-in fade-in-1">
@@ -35,7 +33,6 @@
         </div>
     </div>
 </div>
-
 <div class="row g-3">
     <div class="col-lg-6 fade-in fade-in-1">
         <div class="card h-100">
@@ -82,7 +79,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <script>
@@ -92,10 +88,8 @@
         const warning = '#B96D22';
         const danger = '#A63E30';
         const muted = '#756F5D';
-
         Chart.defaults.font.family = "'Inter', sans-serif";
         Chart.defaults.color = muted;
-
         new Chart(document.getElementById('deviceStatusChart'), {
             type: 'doughnut',
             data: {
@@ -110,7 +104,6 @@
                 plugins: { legend: { position: 'bottom' } }
             }
         });
-
         new Chart(document.getElementById('severityChart'), {
             type: 'bar',
             data: {
@@ -127,7 +120,6 @@
                 scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
             }
         });
-
         new Chart(document.getElementById('monthlyChart'), {
             type: 'line',
             data: {
@@ -148,7 +140,6 @@
                 scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
             }
         });
-
         new Chart(document.getElementById('technicianChart'), {
             type: 'bar',
             data: {

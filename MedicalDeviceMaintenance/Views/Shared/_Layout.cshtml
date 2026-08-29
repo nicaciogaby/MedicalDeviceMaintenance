@@ -132,6 +132,29 @@
         </main>
     </div>
 
+    <div class="toast-stack" id="toastStack">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast-item toast-success" data-autohide="4000">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>@TempData["Success"]</span>
+                <button type="button" class="toast-close" aria-label="Dismiss">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast-item toast-error" data-autohide="6000">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>@TempData["Error"]</span>
+                <button type="button" class="toast-close" aria-label="Dismiss">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        }
+    </div>
+
     <footer class="site-footer">
         <div class="container-fluid px-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -170,6 +193,19 @@
             if (link.href === window.location.href) {
                 link.classList.add('active');
             }
+        });
+
+        document.querySelectorAll('.toast-item').forEach(toast => {
+            const hide = () => {
+                toast.classList.add('toast-hide');
+                setTimeout(() => toast.remove(), 300);
+            };
+            const delay = parseInt(toast.dataset.autohide, 10) || 4000;
+            const timer = setTimeout(hide, delay);
+            toast.querySelector('.toast-close')?.addEventListener('click', () => {
+                clearTimeout(timer);
+                hide();
+            });
         });
     </script>
 

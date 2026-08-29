@@ -5,14 +5,12 @@
     var last30 = Model.Count(m => m.ActionDate >= DateTime.Now.AddDays(-30));
     var technicians = Model.Select(m => m.TechnicianName).Distinct().Count();
 }
-
-<div class="hero-banner" style="background-image: url('~/images/maintenance-hero.jpg');">
+<div class="hero-banner" style="background-image: url('/images/login-hero.jpg');">
     <div class="hero-content">
         <h1>Maintenance actions</h1>
         <p>A log of every repair, inspection and service performed on tracked equipment.</p>
     </div>
 </div>
-
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-4">
         <div class="card stat-card fade-in fade-in-1">
@@ -33,7 +31,6 @@
         </div>
     </div>
 </div>
-
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="h5 mb-0 text-muted">Action log</h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
@@ -43,7 +40,6 @@
         </a>
     }
 </div>
-
 @if (!Model.Any())
 {
     <div class="card p-5 text-center fade-in">

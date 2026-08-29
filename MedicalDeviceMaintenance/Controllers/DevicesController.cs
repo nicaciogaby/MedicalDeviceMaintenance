@@ -56,9 +56,18 @@ namespace MedicalDeviceMaintenance.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(device);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(device);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Device \"{device.Name}\" was created successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "Something went wrong while creating the device. Please try again.";
+                    return View(device);
+                }
             }
             return View(device);
         }
@@ -90,11 +99,24 @@ namespace MedicalDeviceMaintenance.Controllers
                 {
                     _context.Update(device);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Device \"{device.Name}\" was updated successfully.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeviceExists(device.Id)) return NotFound();
-                    else throw;
+                    if (!DeviceExists(device.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        TempData["Error"] = "This device was modified by someone else. Please try again.";
+                        return View(device);
+                    }
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "Something went wrong while saving changes. Please try again.";
+                    return View(device);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -128,8 +150,21 @@ namespace MedicalDeviceMaintenance.Controllers
 
             if (device != null)
             {
-                _context.Devices.Remove(device);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    var deviceName = device.Name;
+                    _context.Devices.Remove(device);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Device \"{deviceName}\" was deleted.";
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "Something went wrong while deleting the device. Please try again.";
+                }
+            }
+            else
+            {
+                TempData["Error"] = "Device not found. It may have already been deleted.";
             }
             return RedirectToAction(nameof(Index));
         }

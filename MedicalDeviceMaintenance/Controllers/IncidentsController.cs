@@ -59,10 +59,18 @@ namespace MedicalDeviceMaintenance.Controllers
         {
             if (ModelState.IsValid)
             {
-                incident.DateReported = DateTime.Now;
-                _context.Add(incident);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    incident.DateReported = DateTime.Now;
+                    _context.Add(incident);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Incident \"{incident.Title}\" was reported successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "Something went wrong while creating the incident. Please try again.";
+                }
             }
 
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
@@ -105,13 +113,24 @@ namespace MedicalDeviceMaintenance.Controllers
                 {
                     _context.Update(incident);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Incident \"{incident.Title}\" was updated successfully.";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!IncidentExists(incident.Id)) return NotFound();
-                    else throw;
+                    if (!IncidentExists(incident.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        TempData["Error"] = "This incident was modified by someone else. Please try again.";
+                    }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception)
+                {
+                    TempData["Error"] = "Something went wrong while saving changes. Please try again.";
+                }
             }
 
             ViewData["DeviceId"] = new SelectList(_context.Devices, "Id", "Name", incident.DeviceId);
@@ -146,8 +165,21 @@ namespace MedicalDeviceMaintenance.Controllers
             var incident = await _context.Incidents.FindAsync(id);
             if (incident != null)
             {
-                _context.Incidents.Remove(incident);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    var title = incident.Title;
+                    _context.Incidents.Remove(incident);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Incident \"{title}\" was deleted.";
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "Something went wrong while deleting the incident. Please try again.";
+                }
+            }
+            else
+            {
+                TempData["Error"] = "Incident not found. It may have already been deleted.";
             }
             return RedirectToAction(nameof(Index));
         }

@@ -32,7 +32,7 @@
             flex: 1.1;
             display: none;
             background-color: var(--color-primary-dark);
-            background-image: url('~/images/login-hero.jpg');
+            background-image: url('/images/login-hero.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -67,12 +67,21 @@
                     font-size: 0.92rem;
                 }
 
+                .login-visual .visual-content .visual-credit {
+                    margin-top: 2rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid rgba(255,255,255,0.18);
+                    color: rgba(255,255,255,0.55);
+                    font-size: 0.75rem;
+                    letter-spacing: 0.03em;
+                    text-transform: uppercase;
+                }
+
         @@media (min-width: 900px) {
             .login-visual {
                 display: block;
             }
         }
-
         /* Right panel — form */
         .login-form-panel {
             flex: 1;
@@ -125,56 +134,47 @@
 </head>
 <body>
     <div class="login-shell">
-
         <!-- Left: photo panel -->
         <div class="login-visual">
             <div class="visual-content">
                 <i class="fa-solid fa-heart-pulse mb-3" style="font-size: 2rem;"></i>
                 <h2>Keep every device accounted for.</h2>
                 <p>MedTracker centralizes equipment status, incidents and maintenance history for your facility.</p>
+                <p class="visual-credit">Developed by Gabriela Nicacio Lima</p>
             </div>
         </div>
-
         <!-- Right: form panel -->
         <div class="login-form-panel">
             <div class="login-form-card fade-in">
-
                 <div class="login-brand">
                     <i class="fa-solid fa-heart-pulse"></i>
                     <span>MedTracker</span>
                 </div>
                 <p class="text-muted mb-4">Sign in to manage devices, incidents and maintenance.</p>
-
                 <form asp-action="Login" method="post">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
-
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label">Email</label>
                         <input asp-for="Email" class="form-control" placeholder="you@medtracker.com" />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
-
                     <div class="mb-3">
                         <label asp-for="Password" class="form-label">Password</label>
                         <input asp-for="Password" class="form-control" placeholder="Enter your password" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
-
                     <div class="mb-3 form-check">
                         <input asp-for="RememberMe" class="form-check-input" />
                         <label asp-for="RememberMe" class="form-check-label small">Remember me</label>
                     </div>
-
                     <button type="submit" class="btn btn-primary w-100 mb-3">
                         <i class="fa-solid fa-right-to-bracket me-2"></i>Sign in
                     </button>
-
                     <div class="text-center mb-3">
                         <a asp-action="Register" class="text-decoration-none small" style="color: var(--color-primary);">
                             <i class="fa-solid fa-user-plus me-1"></i>Create new account
                         </a>
                     </div>
-
                     <div class="demo-accounts mono">
                         <strong style="font-family: 'Inter', sans-serif;">Demo accounts</strong>
                         Admin: admin@medtracker.com / Admin123!<br />
@@ -185,9 +185,44 @@
             </div>
         </div>
     </div>
-
+    <div class="toast-stack" id="toastStack">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast-item toast-success" data-autohide="5000">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>@TempData["Success"]</span>
+                <button type="button" class="toast-close" aria-label="Dismiss">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast-item toast-error" data-autohide="6000">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>@TempData["Error"]</span>
+                <button type="button" class="toast-close" aria-label="Dismiss">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        }
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('.toast-item').forEach(toast => {
+            const hide = () => {
+                toast.classList.add('toast-hide');
+                setTimeout(() => toast.remove(), 300);
+            };
+            const delay = parseInt(toast.dataset.autohide, 10) || 4000;
+            const timer = setTimeout(hide, delay);
+            toast.querySelector('.toast-close')?.addEventListener('click', () => {
+                clearTimeout(timer);
+                hide();
+            });
+        });
+    </script>
 </body>
 </html>

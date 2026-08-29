@@ -6,14 +6,12 @@
     var maintenance = Model.Count(d => d.Status == "Maintenance");
     var other = total - active - maintenance;
 }
-
-<div class="hero-banner" style="background-image: url('~/images/devices-hero.jpg');">
+<div class="hero-banner" style="background-image: url('/images/login-hero.jpg');">
     <div class="hero-content">
         <h1>Medical Devices</h1>
         <p>Track equipment status, location and maintenance history across the facility.</p>
     </div>
 </div>
-
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="card stat-card fade-in fade-in-1">
@@ -40,7 +38,6 @@
         </div>
     </div>
 </div>
-
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h2 class="h5 mb-0 text-muted">Device list</h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Technician"))
@@ -50,7 +47,6 @@
         </a>
     }
 </div>
-
 @if (Model.Any())
 {
     <div class="card mb-3 fade-in">
@@ -79,7 +75,6 @@
         </div>
     </div>
 }
-
 @if (!Model.Any())
 {
     <div class="card p-5 text-center fade-in">
@@ -117,8 +112,8 @@ else
                         <td>@Html.DisplayFor(modelItem => item.Location)</td>
                         <td>
                             <span class="badge @(item.Status == "Active" ? "bg-success" :
-                                                                                      item.Status == "Maintenance" ? "bg-warning" :
-                                                                                      "bg-danger")">
+                                                                                                                        item.Status == "Maintenance" ? "bg-warning" :
+                                                                                                                        "bg-danger")">
                         @item.Status
                     </span>
                 </td>
@@ -158,7 +153,6 @@ else
         </div>
     </div>
 }
-
 @section Scripts {
     <script>
         (function () {
@@ -168,12 +162,10 @@ else
             const resultCount = document.getElementById('deviceResultCount');
             const noResults = document.getElementById('deviceNoResults');
             const table = document.getElementById('deviceTable');
-
             function applyFilters() {
                 const term = (search?.value || '').toLowerCase().trim();
                 const status = statusFilter?.value || '';
                 let visible = 0;
-
                 rows.forEach(row => {
                     const text = row.textContent.toLowerCase();
                     const rowStatus = row.getAttribute('data-status') || '';
@@ -183,7 +175,6 @@ else
                     row.style.display = show ? '' : 'none';
                     if (show) visible++;
                 });
-
                 if (resultCount) {
                     resultCount.textContent = visible + ' of ' + rows.length + ' devices';
                 }
@@ -194,11 +185,9 @@ else
                     table.style.display = visible === 0 ? 'none' : '';
                 }
             }
-
             search?.addEventListener('input', applyFilters);
             statusFilter?.addEventListener('change', applyFilters);
             applyFilters();
         })();
     </script>
 }
-

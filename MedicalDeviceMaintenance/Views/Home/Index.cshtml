@@ -1,9 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
 }
-
 <!-- Hero -->
-<div class="hero-banner" style="background-image: url('~/images/dashboard-hero.jpg');">
+<div class="hero-banner" style="background-image: url('/images/login-hero.jpg');">
     <div class="hero-content d-flex justify-content-between align-items-end flex-wrap gap-3">
         <div>
             <h1>Dashboard</h1>
@@ -22,7 +21,6 @@
         </div>
     </div>
 </div>
-
 <!-- Stat Cards -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3 fade-in fade-in-1">
@@ -54,10 +52,8 @@
         </div>
     </div>
 </div>
-
 <!-- Recent Incidents + Quick Links -->
 <div class="row g-3">
-
     <!-- Recent Incidents Table -->
     <div class="col-lg-8 fade-in fade-in-2">
         <div class="card h-100">
@@ -102,13 +98,13 @@
                                     <td class="text-muted">@incident.Device?.Name</td>
                                     <td>
                                         <span class="badge @(incident.Severity == "Critical" || incident.Severity == "High" ? "bg-danger" :
-                                                                                                           incident.Severity == "Medium" ? "bg-warning" : "bg-info")">
+                                                                                                                                                         incident.Severity == "Medium" ? "bg-warning" : "bg-info")">
                                     @incident.Severity
                                 </span>
                             </td>
                             <td>
                                 <span class="badge @(incident.Status == "Open" ? "bg-danger" :
-                                                                                                   incident.Status == "In Progress" ? "bg-warning" : "bg-success")">
+                                                                                                                                         incident.Status == "In Progress" ? "bg-warning" : "bg-success")">
                                     @incident.Status
                                 </span>
                             </td>
@@ -123,7 +119,6 @@
             </div>
         </div>
     </div>
-
     <!-- Quick Links -->
     <div class="col-lg-4 fade-in fade-in-3">
         <div class="card h-100">
@@ -161,7 +156,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script>
         // Animate stat numbers counting up
@@ -180,7 +174,6 @@
                 el.textContent = current;
             }, 16);
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             animateCount('countTotal',      @(ViewBag.TotalDevices ?? 0));
             animateCount('countActive',     @(ViewBag.ActiveDevices ?? 0));
